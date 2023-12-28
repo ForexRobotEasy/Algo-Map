@@ -1,0 +1,59 @@
+
+// Algo Map - Non-repainting Indicator Feature
+// Developer's site: forexroboteasy.com
+// Developed by: Forex Robot Easy Team
+
+#property strict
+
+// Indicator input parameters
+input int period = 14; // Period for data analysis
+
+// Indicator buffers
+double buffer[];
+
+//+------------------------------------------------------------------+
+//| Custom indicator initialization function                         |
+//+------------------------------------------------------------------+
+int OnInit()
+{
+    // Indicator buffers mapping
+    SetIndexBuffer(0, buffer, INDICATOR_DATA);
+
+    // Define indicator properties
+    IndicatorSetInteger(INDICATOR_DIGITS, 5);
+    IndicatorSetString(INDICATOR_SHORTNAME, 'AlgoMap');
+
+    // Set indicator labels
+    SetIndexLabel(0, 'Algo Map');
+
+    return(INIT_SUCCEEDED);
+}
+
+//+------------------------------------------------------------------+
+//| Custom indicator iteration function                              |
+//+------------------------------------------------------------------+
+int OnCalculate(const int rates_total,
+                const int prev_calculated,
+                const datetime &time[],
+                const double &open[],
+                const double &high[],
+                const double &low[],
+                const double &close[],
+                const long &tick_volume[],
+                const long &volume[],
+                const int &spread[])
+{
+    // Calculate indicator values
+    int limit = rates_total - prev_calculated;
+
+    for (int i = 0; i < limit; i++)
+    {
+        // Perform data analysis and generate signals
+        double signal = iMA(NULL, 0, period, 0, MODE_SMA, PRICE_CLOSE, i);
+
+        // Store signals in the buffer
+        buffer[i] = signal;
+    }
+
+    return(rates_total);
+}
